@@ -18,9 +18,12 @@ const PROD_CONFIG = {
 };
 
 // Auto-detect environment
-const CONFIG = window.location.hostname === 'localhost' || 
-               window.location.hostname === '127.0.0.1' ? 
-               DEV_CONFIG : PROD_CONFIG;
+const isLocalhost = window.location.hostname === 'localhost' || 
+                   window.location.hostname === '127.0.0.1';
+const isGitHubPages = window.location.hostname.includes('github.io');
+
+// Use same config for both localhost and GitHub Pages for demo consistency
+const CONFIG = isLocalhost || isGitHubPages ? DEV_CONFIG : PROD_CONFIG;
 
 // Update API configuration
 console.log('[Config] Environment detected:', window.location.hostname);

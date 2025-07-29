@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="AI 뉴스레터 자동화 데모 - 키워드 기반 맞춤 뉴스레터 구독">
-    <meta name="keywords" content="AI, 뉴스레터, 자동화, N8N, HyperCLOVA">
-    <title>AI Newsletter Demo - 맞춤형 뉴스레터 구독</title>
+    <meta name="description" content="HyperCLOVA-X와 N8N을 활용한 AI 뉴스레터 자동화 데모 - 실시간 라이브 데모">
+    <meta name="keywords" content="HyperCLOVA-X, AI, 뉴스레터, 자동화, N8N, 머신러닝, 개인화">
+    <title>HyperCLOVA-X Newsletter Automation - 라이브 데모</title>
     
     <!-- CSS -->
     <link rel="stylesheet" href="styles/main.css">
@@ -21,11 +21,11 @@
     <nav class="nav-header">
         <div class="container">
             <div class="nav-brand">
-                <h1>🤖 AI Newsletter</h1>
+                <h1>🧠 HyperCLOVA-X Newsletter</h1>
             </div>
             <div class="nav-links">
-                <a href="#demo" class="nav-link">데모</a>
-                <a href="#how-it-works" class="nav-link">작동 방식</a>
+                <a href="#demo" class="nav-link">라이브 데모</a>
+                <a href="#how-it-works" class="nav-link">작동 원리</a>
                 <a href="https://github.com/kmj0825/newsletter-demo" class="nav-link" target="_blank">GitHub</a>
             </div>
         </div>
@@ -36,28 +36,28 @@
         <div class="container">
             <div class="hero-content">
                 <h1 class="hero-title">
-                    AI가 만드는<br>
-                    <span class="highlight">맞춤형 뉴스레터</span>
+                    HyperCLOVA-X 기반<br>
+                    <span class="highlight">AI 뉴스레터 자동화</span>
                 </h1>
                 <p class="hero-description">
-                    관심 키워드를 입력하면 AI가 자동으로 뉴스를 수집하고, 
-                    관련도 순으로 정렬하여 맞춤형 뉴스레터를 즉시 생성하여 발송합니다.
+                    키워드만 입력하면 네이버 뉴스를 수집하고, HyperCLOVA-X가 관련도를 분석해 
+                    개인화된 뉴스레터를 즉시 생성하여 이메일로 발송합니다.
                 </p>
                 <div class="hero-features">
                     <div class="feature-item">
-                        <span class="feature-icon">🔍</span>
-                        <span>키워드 기반 검색</span>
+                        <span class="feature-icon">⚡</span>
+                        <span>즉시 생성</span>
                     </div>
                     <div class="feature-item">
-                        <span class="feature-icon">🤖</span>
-                        <span>AI 자동 큐레이션</span>
+                        <span class="feature-icon">🧠</span>
+                        <span>HyperCLOVA-X 큐레이션</span>
                     </div>
                     <div class="feature-item">
-                        <span class="feature-icon">📧</span>
-                        <span>이메일 자동 발송</span>
+                        <span class="feature-icon">🎯</span>
+                        <span>개인화 추천</span>
                     </div>
                 </div>
-                <a href="#demo" class="cta-button">지금 체험하기</a>
+                <a href="#demo" class="cta-button">데모 체험하기</a>
             </div>
         </div>
     </section>
@@ -66,9 +66,9 @@
     <section id="demo" class="demo-section">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">맞춤 뉴스레터 생성</h2>
+                <h2 class="section-title">라이브 데모</h2>
                 <p class="section-description">
-                    관심 있는 키워드와 이메일 주소를 입력하면 AI가 즉시 뉴스레터를 생성하여 발송합니다
+                    실제로 작동하는 데모입니다. 키워드를 입력하시면 실시간으로 뉴스레터가 생성되어 이메일로 발송됩니다.
                 </p>
             </div>
 
@@ -81,10 +81,10 @@
                             id="keyword" 
                             name="keyword" 
                             class="form-input" 
-                            placeholder="예: AI, 스타트업, 기술트렌드"
+                            placeholder="예: 인공지능, 스타트업, 클라우드, 블록체인"
                             required
                         >
-                        <span class="form-hint">여러 키워드는 쉼표(,)로 구분해주세요</span>
+                        <span class="form-hint">관심 있는 키워드를 입력하세요 (여러 개 가능)</span>
                     </div>
 
                     <div class="form-group">
@@ -133,31 +133,23 @@
                     <div class="step-number">1</div>
                     <div class="step-content">
                         <h3 class="step-title">키워드 입력</h3>
-                        <p class="step-description">관심 있는 뉴스 주제의 키워드를 입력합니다</p>
+                        <p class="step-description">관심 키워드와 이메일 주소를 입력하세요</p>
                     </div>
                 </div>
 
                 <div class="step">
                     <div class="step-number">2</div>
                     <div class="step-content">
-                        <h3 class="step-title">뉴스 수집</h3>
-                        <p class="step-description">네이버 뉴스 API를 통해 최신 뉴스를 자동 수집합니다</p>
+                        <h3 class="step-title">AI 뉴스 큐레이션</h3>
+                        <p class="step-description">네이버 뉴스를 수집하고 HyperCLOVA-X가 관련도 순으로 재정렬</p>
                     </div>
                 </div>
 
                 <div class="step">
                     <div class="step-number">3</div>
                     <div class="step-content">
-                        <h3 class="step-title">AI 큐레이션</h3>
-                        <p class="step-description">HyperCLOVA-X가 관련도를 분석하여 기사를 재정렬합니다</p>
-                    </div>
-                </div>
-
-                <div class="step">
-                    <div class="step-number">4</div>
-                    <div class="step-content">
-                        <h3 class="step-title">뉴스레터 발송</h3>
-                        <p class="step-description">완성된 뉴스레터를 이메일로 자동 발송합니다</p>
+                        <h3 class="step-title">즉시 발송</h3>
+                        <p class="step-description">완성된 맞춤 뉴스레터를 이메일로 바로 전송</p>
                     </div>
                 </div>
             </div>
@@ -169,17 +161,17 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-info">
-                    <h3>AI Newsletter Demo</h3>
-                    <p>N8N과 HyperCLOVA-X를 활용한 뉴스레터 자동화 데모</p>
+                    <h3>HyperCLOVA-X Newsletter Automation</h3>
+                    <p>N8N 워크플로우와 HyperCLOVA-X AI를 활용한 지능형 뉴스레터 자동화 솔루션</p>
                 </div>
                 <div class="footer-links">
                     <a href="https://github.com/kmj0825/newsletter-demo" target="_blank">GitHub</a>
-                    <a href="#demo">데모 체험</a>
-                    <a href="mailto:support@example.com">문의</a>
+                    <a href="#demo">라이브 데모</a>
+                    <a href="#how-it-works">작동 원리</a>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 AI Newsletter Demo. Built with ❤️ and AI.</p>
+                <p>&copy; 2025 Newsletter Automation Demo. Powered by HyperCLOVA-X & N8N</p>
             </div>
         </div>
     </footer>

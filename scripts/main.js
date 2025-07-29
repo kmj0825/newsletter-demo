@@ -184,8 +184,8 @@ class NewsletterApp {
    */
   enhancePlaceholders() {
     const examples = {
-      keyword: ['인공지능, 머신러닝', 'AI, 스타트업', '기술트렌드, 혁신', 'Python, 프로그래밍'],
-      email: ['your@example.com', 'user@company.com', 'name@domain.com']
+      keyword: ['HyperCLOVA-X, 네이버', '인공지능, 딥러닝', '스타트업, 투자', '클라우드, AWS', '블록체인, NFT'],
+      email: ['demo@example.com', 'test@company.com', 'user@domain.com']
     };
     
     // Rotate placeholder examples
