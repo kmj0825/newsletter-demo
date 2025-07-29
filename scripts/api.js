@@ -7,8 +7,7 @@ class NewsletterAPI {
   constructor() {
     // Configuration based on N8N workflow analysis
     this.config = {
-      // TODO: Replace with actual N8N webhook URL
-      webhookUrl: 'https://your-n8n-instance.com/webhook/research',
+      webhookUrl: 'https://hcx-n8n.io.naver.com/webhook/research', // Production URL for CORS support
       timeout: 30000, // 30 seconds timeout
       retryAttempts: 3,
       retryDelay: 1000 // 1 second
@@ -263,6 +262,13 @@ class NewsletterAPI {
 
 // Create global API instance
 window.NewsletterAPI = new NewsletterAPI();
+
+// Apply configuration if APP_CONFIG is already loaded
+if (typeof window.APP_CONFIG !== 'undefined') {
+  console.log('[API] Applying config from APP_CONFIG:', window.APP_CONFIG.N8N_WEBHOOK_URL);
+  window.NewsletterAPI.config.webhookUrl = window.APP_CONFIG.N8N_WEBHOOK_URL;
+  window.NewsletterAPI.config.timeout = window.APP_CONFIG.TIMEOUT;
+}
 
 // Export for module systems
 if (typeof module !== 'undefined' && module.exports) {

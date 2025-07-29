@@ -23,13 +23,20 @@ const CONFIG = window.location.hostname === 'localhost' ||
                DEV_CONFIG : PROD_CONFIG;
 
 // Update API configuration
+console.log('[Config] Environment detected:', window.location.hostname);
+console.log('[Config] Selected config:', CONFIG);
+
 if (typeof NewsletterAPI !== 'undefined') {
+  console.log('[Config] Before update:', NewsletterAPI.config.webhookUrl);
   NewsletterAPI.config.webhookUrl = CONFIG.N8N_WEBHOOK_URL;
   NewsletterAPI.config.timeout = CONFIG.TIMEOUT;
+  console.log('[Config] After update:', NewsletterAPI.config.webhookUrl);
   
   if (CONFIG.DEBUG) {
     console.log('[Config] Newsletter API configured:', NewsletterAPI.config);
   }
+} else {
+  console.warn('[Config] NewsletterAPI not found - will be configured when available');
 }
 
 // Export configuration
