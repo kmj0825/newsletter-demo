@@ -66,10 +66,11 @@
 
 .form-hint {
   display: block;
-  font-size: var(--font-size-xs);
-  color: var(--gray-500);
+  font-size: var(--font-size-sm);
+  color: var(--gray-600);
   margin-top: var(--spacing-2);
-  font-style: italic;
+  font-style: normal;
+  line-height: 1.5;
 }
 
 .form-select {
@@ -109,6 +110,11 @@
 .submit-button:active:not(:disabled) {
   transform: translateY(0);
   box-shadow: var(--shadow-md);
+}
+
+.submit-button:focus:not(:disabled) {
+  outline: 2px solid var(--white);
+  outline-offset: 2px;
 }
 
 .submit-button:disabled {
@@ -399,9 +405,15 @@
     padding: var(--spacing-4);
   }
   
+  .form-hint {
+    font-size: var(--font-size-base); /* 모바일에서 더 큰 폰트 사용 */
+    color: var(--gray-700);
+  }
+  
   .submit-button {
     padding: var(--spacing-4) var(--spacing-5);
     font-size: var(--font-size-base);
+    min-height: 48px; /* 터치 타겟 최적화 */
   }
 }
 

@@ -11,10 +11,11 @@
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/components.css">
     
-    <!-- Fonts -->
+    <!-- Fonts - 성능 최적화 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
 </head>
 <body>
     <!-- Navigation Header -->
@@ -39,10 +40,10 @@
                     HyperCLOVA-X 기반<br>
                     <span class="highlight">AI 뉴스레터 자동화</span>
                 </h1>
-                <p class="hero-description">
-                    키워드만 입력하면 네이버 뉴스를 수집하고, HyperCLOVA-X가 관련도를 분석해 
-                    개인화된 뉴스레터를 즉시 생성하여 이메일로 발송합니다.
-                </p>
+                <div class="hero-description">
+                    <p>키워드만 입력하면 네이버 뉴스를 수집하고,</p>
+                    <p><strong>HyperCLOVA-X가 관련도를 분석해</strong> 개인화된 뉴스레터를 즉시 생성하여 이메일로 발송합니다.</p>
+                </div>
                 <div class="hero-features">
                     <div class="feature-item">
                         <span class="feature-icon">⚡</span>
@@ -67,9 +68,10 @@
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">라이브 데모</h2>
-                <p class="section-description">
-                    실제로 작동하는 데모입니다. 키워드를 입력하시면 실시간으로 뉴스레터가 생성되어 이메일로 발송됩니다.
-                </p>
+                <div class="section-description">
+                    <p>실제로 작동하는 데모입니다.</p>
+                    <p>키워드를 입력하시면 <em>실시간으로</em> 뉴스레터가 생성되어 이메일로 발송됩니다.</p>
+                </div>
             </div>
 
             <div class="demo-content">
