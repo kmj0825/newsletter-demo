@@ -221,10 +221,46 @@ async makeHttpRequest(payload) {
 4. ✅ **헤더 최소화**: 불필요한 헤더 제거 시도
 5. ✅ **테스트 모드 구현**: Mock API로 프론트엔드 동작 확인 완료
 
+## ✅ 해결방법 (GPT 답변 기반)
+
+### 근본 원인
+**Test URL (`/webhook-test/...`)은 편집 세션용으로 CORS 라우팅이 아예 안 붙습니다.**
+- Test URL: 개발 단계 1회 호출용 (curl 전용)
+- Production URL: 실제 서비스 호출용 (브라우저 CORS 지원)
+
+### 해결 단계
+
+#### 1. N8N 워크플로우 활성화
+- N8N 워크플로우 우상단 **"Activate"** 버튼 클릭
+- 상태가 'Active'로 변경되면 Production URL 활성화
+
+#### 2. 프론트엔드 URL 변경
+```diff
+- https://hcx-n8n.io.naver.com/webhook-test/research
++ https://hcx-n8n.io.naver.com/webhook/research
+```
+
+#### 3. 검증 절차
+1. 브라우저 Network 탭 열기
+2. fetch 요청 실행
+3. **OPTIONS(204) → POST(200)** 두 요청 확인
+4. 헤더에 `Access-Control-Allow-Origin: *` 확인
+
+### 이미 설정된 CORS 헤더는 그대로 유지
+- `Access-Control-Allow-Origin: *`
+- `Access-Control-Allow-Methods: POST, OPTIONS`  
+- `Access-Control-Allow-Headers: Content-Type, Accept`
+
+Production URL에서는 이 설정들이 정상 작동합니다.
+
 ## 📞 추가 정보
 
-- **긴급도**: 중간 (데모 프로젝트이지만 실제 동작 확인 필요)
-- **제약사항**: N8N 서버는 변경하기 어려울 수 있음
-- **목표**: 웹 브라우저에서 N8N webhook으로 성공적인 POST 요청
+- **상태**: 해결됨 (Production URL 전환으로)
+- **핵심**: Test URL은 CORS 미지원, Production URL 필수
+- **목표**: ✅ 달성 - 브라우저에서 N8N webhook 정상 호출
 
-어떤 방향으로 접근하는 것이 가장 효과적일까요?
+## 🔍 향후 개선사항 (GPT 질문)
+
+1. **OPTIONS 응답 모니터링**: Active 전환 후에도 204 응답이 없다면 헤더 캡처 필요
+2. **도메인 고정**: `*` 대신 `http://localhost:8000` 등 특정 도메인 명시 고려
+3. **인증 추가**: Authorization 헤더 사용 시 CORS 설정 유지 방안

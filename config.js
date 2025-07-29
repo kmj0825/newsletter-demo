@@ -5,16 +5,14 @@
 
 // Development configuration
 const DEV_CONFIG = {
-  N8N_WEBHOOK_URL: 'https://hcx-n8n.io.naver.com/webhook-test/research',
+  N8N_WEBHOOK_URL: 'https://hcx-n8n.io.naver.com/webhook/research',  // Production URL for CORS support
   DEBUG: true,
   TIMEOUT: 30000
 };
 
 // Production configuration
 const PROD_CONFIG = {
-  // TODO: Update this with your actual N8N webhook URL
-  // Based on the newsletter_workflow.json, the path should be '/webhook/research'
-  N8N_WEBHOOK_URL: 'https://your-n8n-instance.com/webhook/research',
+  N8N_WEBHOOK_URL: 'https://hcx-n8n.io.naver.com/webhook/research',  // Production URL for CORS support
   DEBUG: false,
   TIMEOUT: 30000
 };
