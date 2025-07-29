@@ -12,6 +12,8 @@ const DEV_CONFIG = {
 
 // Production configuration
 const PROD_CONFIG = {
+  // TODO: Update this with your actual N8N webhook URL
+  // Based on the newsletter_workflow.json, the path should be '/webhook/research'
   N8N_WEBHOOK_URL: 'https://your-n8n-instance.com/webhook/research',
   DEBUG: false,
   TIMEOUT: 30000

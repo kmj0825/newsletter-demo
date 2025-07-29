@@ -25,8 +25,11 @@ N8N 자동화 파이프라인을 활용한 맞춤형 뉴스레터 서비스 데�
 1. **웹사이트 방문**: [https://kmj0825.github.io/newsletter-demo](https://kmj0825.github.io/newsletter-demo)
 2. **키워드 입력**: 관심 있는 뉴스 주제 입력 (예: "인공지능", "스타트업", "기술트렌드")
 3. **이메일 입력**: 뉴스레터를 받을 이메일 주소 입력
-4. **구독 신청**: "뉴스레터 구독하기" 버튼 클릭
-5. **확인**: 입력한 이메일로 맞춤 뉴스레터 수신
+4. **언어 선택**: 한국어 또는 영어 선택
+5. **구독 신청**: "뉴스레터 구독하기" 버튼 클릭
+6. **확인**: 처리 상태 확인 후 이메일로 뉴스레터 수신
+
+**⚠️ 주의사항**: 현재 데모는 N8N 워크플로우 URL 설정이 필요합니다. `config.js` 파일에서 실제 N8N 인스턴스 URL로 업데이트해주세요.
 
 ### 로컬 개발 환경 설정
 
@@ -98,16 +101,27 @@ open http://localhost:8000
 
 ### N8N Webhook 설정
 
-1. **N8N 워크플로우 생성**
-2. **Webhook 노드 추가**
-3. **URL 복사 및 설정**
+1. **N8N 워크플로우 불러오기**
+   - `newsletter_workflow.json` 파일을 N8N에 import
+   - 또는 새 워크플로우 생성
 
+2. **Webhook 노드 설정**
+   - Path: `/webhook/research`
+   - Method: `POST`
+   - Response Mode: `lastNode`
+
+3. **API 키 설정**
+   - 네이버 API 키 (Client ID, Client Secret)
+   - HyperCLOVA-X API 토큰
+   - SMTP 설정 (이메일 발송용)
+
+4. **웹훅 URL 업데이트**
 ```javascript
 // config.js에서 설정
-const CONFIG = {
-  WEBHOOK_URL: 'https://your-n8n-instance.com/webhook/newsletter',
-  TIMEOUT: 10000,
-  RETRY_ATTEMPTS: 3
+const PROD_CONFIG = {
+  N8N_WEBHOOK_URL: 'https://your-n8n-instance.com/webhook/research',
+  DEBUG: false,
+  TIMEOUT: 30000
 };
 ```
 
