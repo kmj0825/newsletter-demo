@@ -26,17 +26,38 @@ const CONFIG = window.location.hostname === 'localhost' ||
 console.log('[Config] Environment detected:', window.location.hostname);
 console.log('[Config] Selected config:', CONFIG);
 
-if (typeof NewsletterAPI !== 'undefined') {
-  console.log('[Config] Before update:', NewsletterAPI.config.webhookUrl);
-  NewsletterAPI.config.webhookUrl = CONFIG.N8N_WEBHOOK_URL;
-  NewsletterAPI.config.timeout = CONFIG.TIMEOUT;
-  console.log('[Config] After update:', NewsletterAPI.config.webhookUrl);
-  
-  if (CONFIG.DEBUG) {
-    console.log('[Config] Newsletter API configured:', NewsletterAPI.config);
+function applyConfig() {
+  if (typeof window.NewsletterAPI !== 'undefined') {
+    console.log('[Config] Before update:', window.NewsletterAPI.config.webhookUrl);
+    window.NewsletterAPI.config.webhookUrl = CONFIG.N8N_WEBHOOK_URL;
+    window.NewsletterAPI.config.timeout = CONFIG.TIMEOUT;
+    console.log('[Config] After update:', window.NewsletterAPI.config.webhookUrl);
+    
+    if (CONFIG.DEBUG) {
+      console.log('[Config] Newsletter API configured:', window.NewsletterAPI.config);
+    }
+    return true;
   }
-} else {
-  console.warn('[Config] NewsletterAPI not found - will be configured when available');
+  return false;
+}
+
+// Try to apply config immediately
+if (!applyConfig()) {
+  console.warn('[Config] NewsletterAPI not found - will retry when available');
+  
+  // Keep trying until NewsletterAPI is available
+  const configRetry = setInterval(() => {
+    if (applyConfig()) {
+      console.log('[Config] Successfully configured NewsletterAPI on retry');
+      clearInterval(configRetry);
+    }
+  }, 50); // Check every 50ms
+  
+  // Stop trying after 5 seconds
+  setTimeout(() => {
+    clearInterval(configRetry);
+    console.error('[Config] Failed to configure NewsletterAPI after 5 seconds');
+  }, 5000);
 }
 
 // Export configuration

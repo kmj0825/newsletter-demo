@@ -262,12 +262,16 @@ class NewsletterAPI {
 
 // Create global API instance
 window.NewsletterAPI = new NewsletterAPI();
+console.log('[API] NewsletterAPI created with URL:', window.NewsletterAPI.config.webhookUrl);
 
 // Apply configuration if APP_CONFIG is already loaded
 if (typeof window.APP_CONFIG !== 'undefined') {
   console.log('[API] Applying config from APP_CONFIG:', window.APP_CONFIG.N8N_WEBHOOK_URL);
   window.NewsletterAPI.config.webhookUrl = window.APP_CONFIG.N8N_WEBHOOK_URL;
   window.NewsletterAPI.config.timeout = window.APP_CONFIG.TIMEOUT;
+  console.log('[API] Config applied, new URL:', window.NewsletterAPI.config.webhookUrl);
+} else {
+  console.log('[API] APP_CONFIG not yet available, will be configured by config.js');
 }
 
 // Export for module systems
