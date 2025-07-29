@@ -317,7 +317,7 @@ class NewsletterApp {
       
       // Start submission process
       this.setSubmissionState(true);
-      this.showStatus('뉴스레터 등록을 처리 중입니다...', 'info');
+      this.showStatus('AI가 뉴스레터를 생성하고 있습니다...', 'info');
       
       // Submit to API
       const response = await this.submitToAPI(formData);
@@ -379,7 +379,7 @@ class NewsletterApp {
     this.metrics.successfulSubmissions++;
     this.lastSubmissionSuccessful = true;
     
-    this.showStatus(response.message || '뉴스레터 구독이 완료되었습니다!', 'success');
+    this.showStatus(response.message || '뉴스레터 생성이 완료되었습니다!', 'success');
     
     // Reset form after delay
     setTimeout(() => {
@@ -403,7 +403,7 @@ class NewsletterApp {
     
     this.lastSubmissionSuccessful = false;
     
-    const message = response.message || '뉴스레터 등록 중 오류가 발생했습니다.';
+    const message = response.message || '뉴스레터 생성 중 오류가 발생했습니다.';
     this.showStatus(message, 'error');
     
     // Track error

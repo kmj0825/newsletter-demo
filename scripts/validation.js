@@ -257,7 +257,7 @@ class FormValidator {
     const commonDomains = ['gmail.com', 'naver.com', 'daum.net', 'hanmail.net', 'yahoo.com'];
     const suspiciousDomains = ['gmail.co', 'naver.co', 'gmail.om', 'gmial.com'];
     
-    if (suspiciousDomains.some(suspicious => domain.includes(suspicious))) {
+    if (suspiciousDomains.includes(domain)) {
       return {
         isValid: false,
         message: '이메일 도메인을 다시 확인해주세요. (오타가 있을 수 있습니다)',

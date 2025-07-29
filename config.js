@@ -5,7 +5,7 @@
 
 // Development configuration
 const DEV_CONFIG = {
-  N8N_WEBHOOK_URL: 'http://localhost:5678/webhook/research',
+  N8N_WEBHOOK_URL: 'https://hcx-n8n.io.naver.com/webhook-test/research',
   DEBUG: true,
   TIMEOUT: 30000
 };

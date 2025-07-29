@@ -1,0 +1,559 @@
+{
+  "name": "세미나 데모 용 워크플로우",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "research",
+        "responseMode": "lastNode",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type, Accept"
+              }
+            ]
+          }
+        }
+      },
+      "id": "f56d9bad-15c7-4108-8f9e-9da72441771f",
+      "name": "Webhook 트리거",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -1440,
+        180
+      ],
+      "webhookId": "research-webhook"
+    },
+    {
+      "parameters": {
+        "url": "https://openapi.naver.com/v1/search/news.json",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{ $json.query }}"
+            },
+            {
+              "name": "display",
+              "value": "20"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Naver-Client-Id",
+              "value": "=ukBNYmnsfjlX82JImWyp"
+            },
+            {
+              "name": "X-Naver-Client-Secret",
+              "value": "Nz6VHqzBjR"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "954c9fb7-a25b-42d6-8018-ca679663a5aa",
+      "name": "네이버 뉴스 검색 (Naver API)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        -1100,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://openapi.naver.com/v1/datalab/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Naver-Client-Id",
+              "value": "=ukBNYmnsfjlX82JImWyp"
+            },
+            {
+              "name": "X-Naver-Client-Secret",
+              "value": "Nz6VHqzBjR"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{ \"startDate\":\"2025-01-01\", \n  \"endDate\":\"2025-07-27\", \n  \"timeUnit\":\"month\", \n  \"keywordGroups\":[   \n    { \"groupName\":\"AI\",\n      \"keywords\":[\"챗GPT\",\"생성형AI\"] \n    },   \n    { \"groupName\":\"클라우드\", \n      \"keywords\":[\"AWS\",\"Azure\"] } \n  ], \n  \"device\":\"pc\", \n  \"ages\":[\"3\",\"4\",\"5\"] \n\n}",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "b726b48e-35c5-41fd-9ec3-b7006dad7739",
+      "name": "네이버 검색어 트렌드",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        -1240,
+        -60
+      ]
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "title"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -780,
+        180
+      ],
+      "id": "0613a216-908f-40c9-ac3c-5215e62b33ff",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * n8n Code node\n * 입력: HTTP Request 노드가 반환한 JSON\n * 목적: items[] 배열을 개별 아이템으로 분리 + 태그 제거\n * 출력: [{json:{title, link, pubDate, description}}, …]\n */\nconst raw = $json;                     // HTTP 노드에서 넘어온 한 덩어리\nconst list = raw.items ?? [];          // safety\n\nreturn list.map(i => ({\n  json: {\n    title:       i.title.replace(/<[^>]*>/g, ''),        // <b>태그 제거\n    link:        i.link,\n    pubDate:     i.pubDate,\n    description: i.description.replace(/<[^>]*>/g, '')\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -940,
+        180
+      ],
+      "id": "7115aa4b-e3e4-4c19-8a55-bdebb48b9ced",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://hyperclova-x-alpha-helsinki-agent-hotfix-250611.clops-inference.clova.ai/v2/generate",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer clops_7c8807d97ec8780cb11ac98061dc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "charset",
+              "value": "utf-8"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"top_k\": 1,\n  \"stop\": [\"<|stop|>\", \"<|endofturn|>\"],\n  \"max_tokens\": 8154,\n  \"temperature\": 0.5,\n  \"repeat_penalty\": 1.0,\n  \"prompt\": \"<|im_start|>system\\n당신은 경험 많은 뉴스레터 편집장입니다. 독자의 관심사(query)를 정확히 파악하여, 그들에게 가장 가치 있는 기사를 선별하는 것이 당신의 역할입니다.\\n\\n작업 순서:\\n1. 먼저 독자의 query를 분석하여 핵심 관심사와 평가 기준을 도출하세요\\n2. 도출한 기준에 따라 **제공된 모든 기사**들의 실질적 가치를 평가하세요\\n3. 단순한 키워드 매칭이 아닌, 실제 내용의 깊이와 실용성을 고려하세요\\n4. **반드시 모든 기사에 순위를 매기세요 (1등부터 마지막 등수까지)**\\n\\n반드시 다음 JSON 형식으로만 출력하세요:\\n{\\n  \\\"query_analysis\\\": {\\n    \\\"main_interest\\\": \\\"독자의 핵심 관심사\\\",\\n    \\\"evaluation_criteria\\\": [\\\"기준1\\\", \\\"기준2\\\", \\\"기준3\\\"],\\n    \\\"total_articles\\\": 총_기사_개수\\n  },\\n  \\\"rankings\\\": [\\n    {\\\"rank\\\": 1, \\\"title\\\": \\\"기사 제목\\\", \\\"reason\\\": \\\"선정 이유\\\"},\\n    {\\\"rank\\\": 2, \\\"title\\\": \\\"기사 제목\\\", \\\"reason\\\": \\\"선정 이유\\\"},\\n    ... 모든 기사 포함 ...\\n  ]\\n}\\n\\nJSON 외에 다른 텍스트는 포함하지 마세요.<|im_end|>\\n<|im_start|>user\\nquery: AI 서비스 기획·개발\\n\\n다음 4개 기사를 모두 평가해주세요:\\n- 구글, 새로운 AI 모델 발표\\n- 날씨 예보, 내일 맑음\\n- 삼성전자, AI 칩 개발 투자\\n- LG전자 CEO, \\\"AI가 중요하다\\\" 발언<|im_end|>\\n<|im_start|>assistant\\n{\\n  \\\"query_analysis\\\": {\\n    \\\"main_interest\\\": \\\"AI 서비스의 실제 개발과 구현\\\",\\n    \\\"evaluation_criteria\\\": [\\\"기술적 구체성\\\", \\\"실무 적용 가능성\\\", \\\"개발자/기획자에게 주는 인사이트\\\"],\\n    \\\"total_articles\\\": 4\\n  },\\n  \\\"rankings\\\": [\\n    {\\\"rank\\\": 1, \\\"title\\\": \\\"구글, 새로운 AI 모델 발표\\\", \\\"reason\\\": \\\"실제 사용 가능한 AI 모델 발표로 개발에 직접 활용 가능\\\"},\\n    {\\\"rank\\\": 2, \\\"title\\\": \\\"삼성전자, AI 칩 개발 투자\\\", \\\"reason\\\": \\\"AI 서비스 인프라 발전에 기여하는 하드웨어 개발\\\"},\\n    {\\\"rank\\\": 3, \\\"title\\\": \\\"LG전자 CEO, 'AI가 중요하다' 발언\\\", \\\"reason\\\": \\\"경영진 발언은 트렌드 참고용이지만 실무적 가치는 낮음\\\"},\\n    {\\\"rank\\\": 4, \\\"title\\\": \\\"날씨 예보, 내일 맑음\\\", \\\"reason\\\": \\\"AI와 전혀 관련 없는 일반 날씨 정보\\\"}\\n  ]\\n}<|im_end|>\\n<|im_start|>user\\nquery: {{ $('query').item.json.query }}\\n\\n다음 {{$json.title.length}}개 기사를 모두 평가해주세요:\\n\\n{{$json.title}}<|im_end\\n<|im_start|>assistant\\n{\\n  \\\"query_analysis\\\": {\\n    \\\"main_interest\\\":\"\n}",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 20
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -620,
+        180
+      ],
+      "id": "025d705e-8266-46f9-8dc6-926684bcef53",
+      "name": "HCX 뉴스 기사 리랭킹"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://dev-chainer-api.io.naver.com/v1/chat-completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Clops-Token",
+              "value": "clops_7c8***"
+            },
+            {
+              "name": "X-Chainer-Service-Name",
+              "value": "news-summary"
+            },
+            {
+              "name": "X-Clops-Model",
+              "value": "https://hyperclova-x-alpha-helsinki-fixed-cand2-re.clops-inference.clova.ai"
+            },
+            {
+              "name": "x-request-id",
+              "value": "example1"
+            },
+            {
+              "name": "X-Chainer-Debug",
+              "value": "true"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"stream\": false,\n  \"temperature\": 0.5,\n  \"top_k\": null,\n  \"top_p\": 0.6,\n  \"repetition_penalty\": 1.05,\n  \"max_tokens\": 1152,\n  \"max_text_tokens\": 8192,\n  \"stop\": [\"<|im_end|>\", \"<|endofturn|>\"],\n  \"force_assistant_answer\": true,\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"#목표(Objective)\\n당신은 주어진 기사 제목을 보고 중요한 순서대로 title 을 재배열 합니다\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"기사 제목 : {{ $json.title }}\"\n    }\n  ]\n}",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 20
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1040,
+        -60
+      ],
+      "id": "957bc5a9-302a-4c35-abd1-4b2897f79258",
+      "name": "Clova API Call1"
+    },
+    {
+      "parameters": {
+        "jsCode": "/******************************************************************\n * n8n Code node   —   HyperCLOVA-X 뉴스 랭킹 파서 (Edge-case safe)\n * 입력 : $json.choices[0].text (임의 형식, <|im_end|> 포함)\n * 출력 : [{json:{rank,title,reason}}]  — rank 오름차순\n ******************************************************************/\n\nconst raw = $json.choices?.[0]?.text ?? '';\nconst body = raw.split('<|')[0];                 // 메타 토큰 제거\n\n/*---------------------------------------------------------------\n  STEP-1  순수 JSON 찾기   {...\"rankings\":[ {...}, ... ]}\n----------------------------------------------------------------*/\ntry {\n  const firstBrace = body.indexOf('{');\n  if (firstBrace !== -1) {\n    // JSON.parse 에러 방지를 위해 마지막 '}' 위치까지 자름\n    const lastBrace = body.lastIndexOf('}');\n    if (lastBrace > firstBrace) {\n      const cleaned = body.slice(firstBrace, lastBrace + 1)\n                           .replace(/,\\s*}/g, '}')         // trailing comma\n                           .replace(/,\\s*]/g, ']');        // trailing comma\n      const obj = JSON.parse(cleaned);\n      if (Array.isArray(obj.rankings)) return obj.rankings\n        .map(({rank,title,reason}) => ({json:{rank,title,reason}}))\n        .sort((a,b)=>a.json.rank-b.json.rank);\n    }\n  }\n} catch (_) { /* 뚝—다음 단계 */ }\n\n/*---------------------------------------------------------------\n  STEP-2  객체 블록 단위 파싱  { \"rank\":n, \"title\":\"...\", ... }\n----------------------------------------------------------------*/\nconst blockRegex = /\\{[^{}]*?\"rank\"\\s*:\\s*\\d+[^{}]*?\"reason\"\\s*:\\s*\"[^\"]+?\"[^{}]*?}/gs;\nconst blocks = [...body.matchAll(blockRegex)].map(m=>m[0]);\nconst results = [];\n\nfor (const blk of blocks) {\n  try {\n    const safe = blk.replace(/,\\s*}/g,'}').replace(/,\\s*]/g,']');\n    const {rank,title,reason} = JSON.parse(safe);\n    results.push({rank,title,reason});\n  } catch {/* skip */}\n}\nif (results.length) {\n  results.sort((a,b)=>a.rank-b.rank);\n  return results.map(r=>({json:r}));\n}\n\n/*---------------------------------------------------------------\n  STEP-3  1-라인 패턴 파싱  \"rank\": n , \"title\": \"...\", \"reason\": \"...\"\n----------------------------------------------------------------*/\nconst lineRegex = /\"rank\"\\s*:\\s*(\\d+)[\\s\\S]+?\"title\"\\s*:\\s*\"([^\"]+?)\"[\\s\\S]+?\"reason\"\\s*:\\s*\"([^\"]+?)\"/g;\nlet m; let autoRank = 1;\nwhile ((m=lineRegex.exec(body))!==null) {\n  results.push({\n    rank:   Number(m[1]) || autoRank++,\n    title:  m[2],\n    reason: m[3]\n  });\n}\nif (!results.length) throw new Error('랭킹 정보를 찾지 못했습니다.');\n\nresults.sort((a,b)=>a.rank-b.rank);\n\n// 제목 중복 제거(첫 번째만 남김)\nconst seen = new Set();\nconst unique = results.filter(r=>{\n  if (seen.has(r.title)) return false;\n  seen.add(r.title); return true;\n});\n\nreturn unique.map(r=>({json:r}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -460,
+        180
+      ],
+      "id": "24dbe932-0239-452f-9296-bd2c3cc45a04",
+      "name": "Code1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -300,
+        180
+      ],
+      "id": "01ed54fd-a06c-48c9-b65e-8e768a4ad607",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * n8n Code node\n * INPUT  : 섞여-있는  items  ( ① rank·reason 전용 ② link·pubDate·description 전용 )\n * OUTPUT : 두 정보를 합쳐 완전한 단일 JSON 배열\n *          {title, link, pubDate, description, rank, reason}\n */\n\nconst THRESHOLD = 0.45;  // 제목 유사도 임계값(0~1)―낮출수록 관대한 병합\n\n/* 유사도: 공백·구두점 제거 후 Jaccard */\nfunction similarity(a, b) {\n  const clean = s => s.toLowerCase().replace(/[^\\p{L}\\p{N}\\s]/gu,'');\n  const A = new Set(clean(a).split(/\\s+/));\n  const B = new Set(clean(b).split(/\\s+/));\n  const inter = [...A].filter(x => B.has(x)).length;\n  return inter / (A.size + B.size - inter || 1);\n}\n\n/* 누적 Map  titleKey → 객체 */\nconst merged = [];\n\nfor (const { json } of items) {\n  const cur = { ...json };                       // 복사\n  const title = cur.title?.trim();\n  if (!title) continue;\n\n  // 가장 유사한 기사 찾기\n  let bestIdx = -1, bestScore = 0;\n  merged.forEach((m, idx) => {\n    const s = similarity(title, m.title);\n    if (s > bestScore) { bestScore = s; bestIdx = idx; }\n  });\n\n  /* 새 그룹 */\n  if (bestScore < THRESHOLD) {\n    merged.push(cur);\n    continue;\n  }\n\n  /* 병합 – 빈 필드는 채워 넣기 */\n  const target = merged[bestIdx];\n  for (const k of ['link','pubDate','description','rank','reason']) {\n    if (target[k] === undefined || target[k] === null) target[k] = cur[k];\n  }\n}\n\n/* 정렬: rank 있는 건 오름차순, 없으면 뒤로 */\nmerged.sort((a,b)=> (a.rank??999) - (b.rank??999));\n\nreturn merged.map(j => ({ json: j }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -140,
+        180
+      ],
+      "id": "8f9eda1b-6667-4eaa-89bf-46e5bcb1295d",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0a14fc15-dcc7-4715-b0bb-7ad2d0be136f",
+              "name": "query",
+              "value": "={{ $json.body.query }}",
+              "type": "string"
+            },
+            {
+              "id": "6bde02c7-c86c-4250-90c9-2bb4744fa4d0",
+              "name": "address",
+              "value": "={{ $json.body.address }}",
+              "type": "string"
+            },
+            {
+              "id": "1e185e3f-3385-4e43-a149-d6a11b18fb2e",
+              "name": "language",
+              "value": "={{ $json.body.language }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1260,
+        180
+      ],
+      "id": "2e2591cb-af34-4e1e-b697-ef466745ebd8",
+      "name": "query"
+    },
+    {
+      "parameters": {
+        "content": "## 키워드 기반 네이버 뉴스 목록 스크랩",
+        "height": 260,
+        "width": 460
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1280,
+        100
+      ],
+      "id": "06a62bd4-7a93-4c79-8f39-cf586d597d2c",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## 네이버 뉴스 기사 Re-ranking\n",
+        "height": 260,
+        "width": 800
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        100
+      ],
+      "id": "14c21d8a-7e24-42b2-b735-de8d900bd9da",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "jsCode": "/* ---------- 0) 오늘 날짜 ---------- */\nconst dateStr = new Date().toLocaleDateString('ko-KR', {\n  year:  'numeric',\n  month: 'long',\n  day:   'numeric',\n});\n\n/* ---------- 공통 상수 ---------- */\nconst OUTER_WRAP = `\n  width:100%;\n  max-width:600px;\n  border:1px solid #d9d9d9;\n  border-radius:8px;\n  font-family:Arial,Helvetica,sans-serif;\n  overflow:hidden;\n`;\n\n/* ---------- 1) HEADER ---------- */\nconst headerHtml = `\n  <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\"\n         style=\"width:100%;margin:0 auto 32px;\">\n    <tr><td align=\"center\">\n      <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" style=\"${OUTER_WRAP}\">\n        <tr><td style=\"background:#61ba7a;padding:24px;text-align:center;\">\n\n          <!-- 메인 타이틀 -->\n          <span style=\"display:block;font-size:28px;font-weight:bold;color:#fff;line-height:1.3;\">\n            &nbsp;HyperClova&nbsp;News&nbsp;Letter\n          </span>\n\n          <!-- 안내 문구 (개선·피드백 문구) -->\n          <span style=\"display:block;margin-top:6px;font-size:13px;color:#e9ffe5;line-height:1.4;\">\n            본 뉴스레터는 AI 기술을 활용해 자동으로 수집·선별·가공된 콘텐츠입니다.<br/>\n            더 나은 서비스를 위해 지속적으로 개선하고 있으니, 소중한 의견을 부탁드립니다.\n          </span>\n\n        </td></tr>\n      </table>\n    </td></tr>\n  </table>\n`;\n\n/* ---------- 2) 본문 ---------- */\nconst bodyPlaceholder = $input.first().json.htmlBlocks;\n\n/* ---------- 3) CTA(버튼) ---------- */\nconst ctaHtml = `\n  <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:100%;margin:0 auto 32px auto;\">\n    <tr><td align=\"center\">\n      <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" style=\"${OUTER_WRAP}\">\n        <tr><td style=\"padding:24px;text-align:center;\">\n          <h2 style=\"margin:0 0 18px 0;font-size:24px;color:#333;\">오늘의 뉴스를 더 자세히 알고싶다면?</h2>\n          <a href=\"https://agent.io.naver.com/agent/ai_newsletter\" style=\"\n            display:inline-block;\n            background:#61ba7a;\n            color:#fff;\n            font-size:16px;\n            font-weight:bold;\n            padding:12px 28px;\n            border-radius:24px;\n            text-decoration:none;\n          \">에이전트에게 물어보기 →</a>\n        </td></tr>\n      </table>\n    </td></tr>\n  </table>\n`;\n\n/* ---------- 4) FOOTER ---------- */\nconst footerHtml = `\n  <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:100%;margin:32px auto 0 auto;\">\n    <tr><td align=\"center\">\n      <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" style=\"${OUTER_WRAP}\">\n        <tr><td style=\"background:#222;padding:24px;color:#fff;font-size:12px;line-height:1.6;text-align:left;\">\n          <p style=\"margin:0 0 12px 0;\">\n            위 전자우편 및 그에 포함된 정보는 위에 기재된 수신인만을 위해 발송되는 것으로서 보안을\n            유지해야 하는 정보 및 법률상 또는 다른 사유로 인하여 공개가 금지된 정보가 들어 있을 수 있습니다.\n            귀하가 이 전자우편의 지정 수신인이 아니면 이를 무단으로 보유, 복제, 전송, 배포, 공개할 수 없으며,\n            일부의 내용이라도 보유, 복제, 배포, 공개해서는 안됩니다. 잘못 수신된 경우에는 즉시\n            <a href=\"mailto:dl_ncloud_privacy@navercorp.com\" style=\"color:#61ba7a;text-decoration:none;\">네이버 클라우드 개인정보보호(dl_ncloud_privacy@navercorp.com)</a>로\n            연락하여 주시고, 원본 및 사본과 그에 따른 첨부 문서를 모두 삭제하여 주시기 바랍니다.\n          </p>\n          <p style=\"margin:0;\">\n            This email and the information contained in this email are intended solely for the recipient(s) addressed above\n            and may contain information that is confidential and/or privileged or whose disclosure is prohibited by law or\n            other reasons. If you are not the intended recipient, any unauthorized storage, duplication, dissemination,\n            distribution or disclosure is strictly prohibited. If you received this email in error, please immediately\n            contact <a href=\"mailto:dl_ncloud_privacy@navercorp.com\" style=\"color:#61ba7a;text-decoration:none;\">NAVER Cloud Privacy</a>\n            and delete this email and any copies/attachments from your system.\n          </p>\n        </td></tr>\n      </table>\n    </td></tr>\n  </table>\n`;\n\n/* ---------- 5) 최종 HTML ---------- */\nconst finalHtml = headerHtml + bodyPlaceholder + ctaHtml + footerHtml;\n\n/* ---------- 6) 반환 ---------- */\nreturn [\n  { json: { htmlBlocks: finalHtml } }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        180
+      ],
+      "id": "7a8ab316-92a2-4994-a569-b54d57cd1c34",
+      "name": "Header/Footer HTML4"
+    },
+    {
+      "parameters": {
+        "fromEmail": "raphael825@naver.com",
+        "toEmail": "={{ $node[\"query\"].json.address }}",
+        "subject": "=Hyperclova News Letter ",
+        "emailFormat": "html",
+        "html": "={{ $json.htmlBlocks }}",
+        "options": {}
+      },
+      "id": "1a706b13-4982-4a57-bc3a-5459b3434717",
+      "name": "이메일 발송",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        380,
+        180
+      ],
+      "webhookId": "4dd3504c-cc2b-477e-83ae-e4ea472ab20e",
+      "credentials": {
+        "smtp": {
+          "id": "FP2VjQFtER33dKXx",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## 뉴스레터 전송 \n",
+        "height": 260,
+        "width": 620
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        20,
+        100
+      ],
+      "id": "f8249de6-7017-4784-bd70-6a0b133c4710",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * n8n Function ▸ \"HTML 이메일 생성\"\n * ──────────────────────────────────────────────────────────\n * 인풋: 각 아이템에 rank, title, reason, link, pubDate, description 필드가 존재\n * 아웃: [{ json: { htmlBlocks: … } }]\n * ──────────────────────────────────────────────────────────\n */\n\n/* 0) 오늘 날짜 */\nconst dateStr = new Date().toLocaleDateString('ko-KR', {\n  year: 'numeric', month: 'long', day: 'numeric',\n});\n\n/* 1) 공통 스타일 */\nconst WRAPPER_STYLE = `\n  width:100%;max-width:600px;border:1px solid #d9d9d9;border-radius:8px;\n  font-family:Arial,Helvetica,sans-serif;\n`;\n\n/* 2) 미리보기 블록 */\nconst previewTitles = items\n  .slice(0, 5)  // 상위 5개만 미리보기에 표시\n  .map((item, idx) => `${idx + 1}. ${item.json.title}`)\n  .join('<br/>');\n\nconst previewHtml = `\n  <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:100%;margin:0 auto 32px;\">\n    <tr><td align=\"center\">\n      <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" style=\"${WRAPPER_STYLE}\">\n        <tr><td style=\"padding:24px;\">\n          <h2 style=\"margin:0 0 16px;font-size:24px;font-weight:bold;color:#61ba7a;\">${dateStr} AI 주요 소식 TOP 5</h2>\n          <p style=\"font-size:16px;line-height:1.6;color:#111;margin:0;\">${previewTitles}</p>\n        </td></tr>\n      </table>\n    </td></tr>\n  </table>\n`;\n\n/* 3) 기사 카드 + 피드백 링크 */\nconst BASE_URL = 'https://hcx-n8n.io.naver.com/webhook/get_score';\n\n// 상위 10개 기사만 표시\nconst cardsHtml = items.slice(0, 10).map((item, idx) => {\n  const a = item.json;\n\n  /* ── rank 라벨 ───────────────────────────── */\n  const rankLabel = a.rank\n    ? `<p style=\"font-size:14px;color:#61ba7a;margin:0 0 4px;text-align:left;font-weight:bold;\">\n         AI 관련도 ${a.rank}위\n       </p>`\n    : '';\n\n  /* ── 선정 이유 (reason) ─────────────────────── */\n  const reasonBlock = a.reason\n    ? `<div style=\"background:#f5f5f5;padding:12px;border-radius:6px;margin:0 0 16px;\">\n         <p style=\"font-size:14px;color:#666;margin:0;font-style:italic;\">\n           💡 선정 이유: ${a.reason}\n         </p>\n       </div>`\n    : '';\n\n  /* ── 본문 (description) ─────────────────────── */\n  const body = a.description\n    ? `<p style=\"font-size:16px;line-height:1.6;margin:0 0 18px;color:#333;\">\n         ${a.description.substring(0, 200)}${a.description.length > 200 ? '...' : ''}\n       </p>`\n    : '';\n\n  /* ── 발행일 (pubDate) ───────────────────────── */\n  const pubDateLabel = a.pubDate\n    ? `<p style=\"font-size:13px;color:#999;margin:0 0 12px;\">\n         📅 ${new Date(a.pubDate).toLocaleDateString('ko-KR', {\n           year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'\n         })}\n       </p>`\n    : '';\n\n  /* ── 1-5 점수 링크 ───────────────────────── */\n  const feedback = Array.from({ length: 5 }, (_, n) => n + 1)\n    .map(n => `\n      <a href=\"${BASE_URL}?url=${encodeURIComponent(a.link || a.url)}&score=${n}\"\n         style=\"display:inline-block;width:24px;font-size:16px;margin:0 4px;\n                text-decoration:none;color:#61ba7a;\">${n}</a>`)\n    .join('');\n\n  /* ── 카드 HTML ───────────────────────────── */\n  return `\n    <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:100%;margin:0 auto 32px;\">\n      <tr><td align=\"center\">\n        <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" style=\"${WRAPPER_STYLE}\">\n          <tr><td style=\"padding:24px;\">\n\n            ${rankLabel}\n\n            <h2 style=\"margin:0 0 16px;font-size:22px;line-height:1.3;\">\n              <a href=\"${a.link || a.url}\" style=\"color:#61ba7a;text-decoration:none;\">${a.title}</a>\n            </h2>\n\n            ${pubDateLabel}\n            ${reasonBlock}\n            ${body}\n\n            <a href=\"${a.link || a.url}\" style=\"color:#61ba7a;font-size:16px;font-weight:bold;text-decoration:none;\">\n              자세히 보기 →\n            </a>\n\n            <hr style=\"border:none;border-top:1px solid #d9d9d9;margin:24px 0;\"/>\n\n            <p style=\"font-size:16px;font-weight:bold;text-align:center;margin:0 0 12px;color:#111;\">\n              이 기사, 어땠나요?\n            </p>\n            <p style=\"font-size:12px;color:#777;margin:0 0 12px;text-align:center;\">\n              모바일에선 아직 평점이 지원되지 않습니다.<br/>\n              웹 브라우저에서 참여해 주세요.\n            </p>\n\n            <div style=\"text-align:center;\">${feedback}</div>\n\n          </td></tr>\n        </table>\n      </td></tr>\n    </table>\n  `;\n}).join('');\n\n/* 4) 결과 반환 */\nreturn [{ json: { htmlBlocks: previewHtml + cardsHtml } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        60,
+        180
+      ],
+      "id": "86a48f4b-d03a-476d-a53f-bda389db8d7a",
+      "name": "News Block HTML"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "네이버 뉴스 검색 (Naver API)": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "HCX 뉴스 기사 리랭킹",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "HCX 뉴스 기사 리랭킹": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "query": {
+      "main": [
+        [
+          {
+            "node": "네이버 뉴스 검색 (Naver API)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "News Block HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Header/Footer HTML4": {
+      "main": [
+        [
+          {
+            "node": "이메일 발송",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "News Block HTML": {
+      "main": [
+        [
+          {
+            "node": "Header/Footer HTML4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook 트리거": {
+      "main": [
+        [
+          {
+            "node": "query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "67bd1491-4c19-445f-af58-1f2093717b32",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5b40a9494f24c8b44272b9f4d7c9963f14b3c071b2bdbe4d4eb707fe6a8210b2"
+  },
+  "id": "wq4UXGzUmmGSXeB8",
+  "tags": []
+}
