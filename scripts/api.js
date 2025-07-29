@@ -43,16 +43,16 @@ class NewsletterAPI {
       // Make request with retry logic
       const response = await this.makeRequestWithRetry(payload, requestId);
       
-      console.log(`[API] Subscription request ${requestId} completed successfully`);
+      console.log(`[API] Newsletter generation request ${requestId} completed successfully`);
       return {
         success: true,
-        message: '뉴스레터 구독이 성공적으로 등록되었습니다. 곧 이메일을 받으실 수 있습니다.',
+        message: '뉴스레터가 성공적으로 생성되었습니다. 곧 이메일을 받으실 수 있습니다.',
         data: response,
         requestId: requestId
       };
       
     } catch (error) {
-      console.error(`[API] Subscription request ${requestId} failed:`, error);
+      console.error(`[API] Newsletter generation request ${requestId} failed:`, error);
       
       return {
         success: false,
@@ -111,6 +111,13 @@ class NewsletterAPI {
     const timeoutId = setTimeout(() => controller.abort(), this.config.timeout);
     
     try {
+      console.log('[API] Making request to:', this.config.webhookUrl);
+      console.log('[API] Request payload:', payload);
+      console.log('[API] Request headers:', {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      });
+      
       const response = await fetch(this.config.webhookUrl, {
         method: 'POST',
         headers: {
@@ -121,11 +128,15 @@ class NewsletterAPI {
         signal: controller.signal
       });
       
+      console.log('[API] Response received:', response.status, response.statusText);
+      console.log('[API] Response headers:', Object.fromEntries(response.headers.entries()));
+      
       clearTimeout(timeoutId);
       
       // Check if response is ok
       if (!response.ok) {
         const errorText = await response.text().catch(() => 'Unknown error');
+        console.error('[API] Error response body:', errorText);
         throw new Error(`HTTP ${response.status}: ${errorText}`);
       }
       
@@ -141,13 +152,28 @@ class NewsletterAPI {
         responseData = { message: textResponse, status: 'success' };
       }
       
+      console.log('[API] Response data:', responseData);
       return responseData;
       
     } catch (error) {
       clearTimeout(timeoutId);
       
+      console.error('[API] Fetch error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack,
+        cause: error.cause
+      });
+      
       if (error.name === 'AbortError') {
         throw new Error(`Request timeout (${this.config.timeout}ms)`);
+      }
+      
+      // Check for specific network errors
+      if (error.name === 'TypeError' && error.message.toLowerCase().includes('fetch')) {
+        // This is likely a CORS or network connectivity issue
+        console.error('[API] Network/CORS error detected');
+        throw new Error('CORS_ERROR');
       }
       
       // Enhance error with status if available
@@ -166,6 +192,13 @@ class NewsletterAPI {
    */
   getErrorMessage(error) {
     const message = error.message.toLowerCase();
+    
+    // CORS/Network errors (most common issue)
+    if (message.includes('cors_error') || 
+        (message.includes('fetch') && message.includes('typeerror')) ||
+        message.includes('failed to fetch')) {
+      return '서버 연결이 차단되었습니다. N8N 서버에서 CORS 설정을 확인해주세요. (브라우저 콘솔에서 자세한 오류 확인 가능)';
+    }
     
     // Network errors
     if (message.includes('fetch') || message.includes('network')) {
