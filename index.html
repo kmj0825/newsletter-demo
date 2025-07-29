@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI 뉴스레터 자동화 데모 - 키워드 기반 맞춤 뉴스레터 구독">
+    <meta name="keywords" content="AI, 뉴스레터, 자동화, N8N, HyperCLOVA">
+    <title>AI Newsletter Demo - 맞춤형 뉴스레터 구독</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/components.css">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation Header -->
+    <nav class="nav-header">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>🤖 AI Newsletter</h1>
+            </div>
+            <div class="nav-links">
+                <a href="#demo" class="nav-link">데모</a>
+                <a href="#how-it-works" class="nav-link">작동 방식</a>
+                <a href="https://github.com/kmj0825/newsletter-demo" class="nav-link" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    AI가 만드는<br>
+                    <span class="highlight">맞춤형 뉴스레터</span>
+                </h1>
+                <p class="hero-description">
+                    관심 키워드를 입력하면 AI가 자동으로 뉴스를 수집하고, 
+                    관련도 순으로 정렬하여 맞춤형 뉴스레터를 이메일로 발송합니다.
+                </p>
+                <div class="hero-features">
+                    <div class="feature-item">
+                        <span class="feature-icon">🔍</span>
+                        <span>키워드 기반 검색</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🤖</span>
+                        <span>AI 자동 큐레이션</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">📧</span>
+                        <span>이메일 자동 발송</span>
+                    </div>
+                </div>
+                <a href="#demo" class="cta-button">지금 체험하기</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section id="demo" class="demo-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">뉴스레터 구독하기</h2>
+                <p class="section-description">
+                    관심 있는 키워드와 이메일 주소를 입력하고 맞춤 뉴스레터를 받아보세요
+                </p>
+            </div>
+
+            <div class="demo-content">
+                <form id="newsletter-form" class="newsletter-form">
+                    <div class="form-group">
+                        <label for="keyword" class="form-label">관심 키워드 *</label>
+                        <input 
+                            type="text" 
+                            id="keyword" 
+                            name="keyword" 
+                            class="form-input" 
+                            placeholder="예: AI, 스타트업, 기술트렌드"
+                            required
+                        >
+                        <span class="form-hint">여러 키워드는 쉼표(,)로 구분해주세요</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="form-label">이메일 주소 *</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            class="form-input" 
+                            placeholder="your@example.com"
+                            required
+                        >
+                        <span class="form-hint">뉴스레터를 받을 이메일 주소를 입력해주세요</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="language" class="form-label">언어 설정</label>
+                        <select id="language" name="language" class="form-select">
+                            <option value="ko">한국어</option>
+                            <option value="en">English</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="submit-button" id="submit-btn">
+                        <span class="btn-text">뉴스레터 구독하기</span>
+                        <span class="btn-loader" style="display: none;">처리 중...</span>
+                    </button>
+                </form>
+
+                <!-- Status Messages -->
+                <div id="status-message" class="status-message" style="display: none;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">어떻게 작동하나요?</h2>
+                <p class="section-description">N8N과 AI를 활용한 자동화 파이프라인</p>
+            </div>
+
+            <div class="process-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3 class="step-title">키워드 입력</h3>
+                        <p class="step-description">관심 있는 뉴스 주제의 키워드를 입력합니다</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3 class="step-title">뉴스 수집</h3>
+                        <p class="step-description">네이버 뉴스 API를 통해 최신 뉴스를 자동 수집합니다</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3 class="step-title">AI 큐레이션</h3>
+                        <p class="step-description">HyperCLOVA-X가 관련도를 분석하여 기사를 재정렬합니다</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3 class="step-title">뉴스레터 발송</h3>
+                        <p class="step-description">완성된 뉴스레터를 이메일로 자동 발송합니다</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>AI Newsletter Demo</h3>
+                    <p>N8N과 HyperCLOVA-X를 활용한 뉴스레터 자동화 데모</p>
+                </div>
+                <div class="footer-links">
+                    <a href="https://github.com/kmj0825/newsletter-demo" target="_blank">GitHub</a>
+                    <a href="#demo">데모 체험</a>
+                    <a href="mailto:support@example.com">문의</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 AI Newsletter Demo. Built with ❤️ and AI.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="scripts/validation.js"></script>
+    <script src="scripts/api.js"></script>
+    <script src="scripts/main.js"></script>
+</body>
+</html>
