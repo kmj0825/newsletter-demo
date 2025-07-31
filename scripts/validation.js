@@ -19,9 +19,12 @@ class FormValidator {
         maxLength: 254,
         customValidator: this.validateEmail
       },
-      language: {
+      sorting: {
         required: true,
-        options: ['ko', 'en']
+        minLength: 2,
+        maxLength: 50,
+        pattern: /^[a-zA-Z0-9가-힣\s,.-]+$/,
+        customValidator: this.validateSorting
       }
     };
     
@@ -33,6 +36,7 @@ class FormValidator {
         pattern: '올바른 형식으로 입력해주세요.',
         email: '유효한 이메일 주소를 입력해주세요.',
         keyword: '키워드는 한글, 영문, 숫자, 쉼표만 사용 가능합니다.',
+        sorting: '정렬 기준은 한글, 영문, 숫자만 사용 가능합니다.',
         options: '올바른 옵션을 선택해주세요.'
       },
       en: {
@@ -42,6 +46,7 @@ class FormValidator {
         pattern: 'Please enter a valid format.',
         email: 'Please enter a valid email address.',
         keyword: 'Keyword can only contain letters, numbers, and commas.',
+        sorting: 'Sorting criteria can only contain letters, numbers, and spaces.',
         options: 'Please select a valid option.'
       }
     };
@@ -98,7 +103,8 @@ class FormValidator {
     // Pattern validation
     if (rule.pattern && !rule.pattern.test(trimmedValue)) {
       const messageKey = fieldName === 'email' ? 'email' : 
-                        fieldName === 'keyword' ? 'keyword' : 'pattern';
+                        fieldName === 'keyword' ? 'keyword' : 
+                        fieldName === 'sorting' ? 'sorting' : 'pattern';
       return {
         isValid: false,
         message: messages[messageKey],
@@ -357,6 +363,54 @@ class FormValidator {
   }
 
   /**
+   * Custom sorting validation
+   * @param {string} value - Sorting value
+   * @param {string} language - Language for error messages
+   * @returns {Object} Validation result
+   */
+  validateSorting(value, language = 'ko') {
+    const messages = this.messages[language];
+    
+    // Check for meaningful content
+    if (value.length < 2) {
+      return {
+        isValid: false,
+        message: '정렬 기준을 2자 이상 입력해주세요.',
+        type: 'minLength'
+      };
+    }
+
+    // Check for reasonable length
+    if (value.length > 50) {
+      return {
+        isValid: false,
+        message: '정렬 기준을 50자 이하로 입력해주세요.',
+        type: 'maxLength'
+      };
+    }
+
+    // Check for common sorting criteria patterns
+    const commonPatterns = [
+      '신모델', '개발', '투자', '동향', '기술', '시장', '분석', '업계', 
+      '트렌드', '전망', '예측', '성장', '변화', '혁신', '출시', '발표'
+    ];
+    
+    const hasRelevantKeyword = commonPatterns.some(pattern => 
+      value.toLowerCase().includes(pattern)
+    );
+
+    if (!hasRelevantKeyword && value.length > 10) {
+      return {
+        isValid: true,
+        message: '',
+        suggestion: '예시: 신모델 개발, 투자 동향, 기술 트렌드, 시장 분석 등'
+      };
+    }
+
+    return { isValid: true, message: '' };
+  }
+
+  /**
    * Get suggestions for common input improvements
    * @param {string} fieldName - Field name
    * @param {string} value - Field value
@@ -383,6 +437,13 @@ class FormValidator {
       const domain = value.split('@')[1];
       if (domain && commonSuggestions[domain]) {
         suggestions.push(`${commonSuggestions[domain]}을(를) 의도하신 건 아닌가요?`);
+      }
+    }
+
+    if (fieldName === 'sorting') {
+      const exampleSortings = ['신모델 개발', '투자 동향', '기술 트렌드', '시장 분석', '업계 동향'];
+      if (value.length < 5) {
+        suggestions.push(`예시: ${exampleSortings.join(', ')}`);
       }
     }
 

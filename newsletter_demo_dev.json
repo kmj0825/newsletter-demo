@@ -1,4 +1,5 @@
 {
+  "name": "newsletter-demo-dev",
   "nodes": [
     {
       "parameters": {
@@ -33,13 +34,13 @@
           "timeout": 10000
         }
       },
-      "id": "6312a255-9b91-4ee7-94e0-c7eef89593e9",
+      "id": "75963888-ba4f-4a58-a5db-8dbc4973358b",
       "name": "네이버 뉴스 검색 (Naver API)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 3,
       "position": [
-        -1800,
-        220
+        360,
+        100
       ]
     },
     {
@@ -77,10 +78,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -1340,
-        220
+        840,
+        100
       ],
-      "id": "854b326d-ab94-4129-969c-5a5f2d6afeec",
+      "id": "a448db36-4f16-48e4-aaca-38fee166fa56",
       "name": "HCX 뉴스 기사 리랭킹"
     },
     {
@@ -88,10 +89,10 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        -1040,
-        220
+        1140,
+        100
       ],
-      "id": "cf775c42-a5a7-4373-a928-0e63a6183a73",
+      "id": "d458bf04-229b-49e8-a477-d1869542c6df",
       "name": "Merge"
     },
     {
@@ -111,6 +112,12 @@
               "type": "string"
             },
             {
+              "id": "1e185e3f-3385-4e43-a149-d6a11b18fb2e",
+              "name": "language",
+              "value": "={{ $json.language }}",
+              "type": "string"
+            },
+            {
               "id": "92f41a4b-c213-4c34-b1c9-325910c096b3",
               "name": "sorting",
               "value": "={{ $json.sorting }}",
@@ -123,10 +130,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -1960,
-        220
+        220,
+        100
       ],
-      "id": "353d1cf8-b431-47b1-aee2-9bddac54430a",
+      "id": "7656dd62-35b3-4d64-a5d8-3d3c32aa0b28",
       "name": "query"
     },
     {
@@ -138,10 +145,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -1980,
-        120
+        200,
+        0
       ],
-      "id": "13b7177b-fa50-441a-ad07-0b49a4ca42b5",
+      "id": "49c9d8e0-6b32-4a96-8c99-e1df8f9a9cc5",
       "name": "Sticky Note"
     },
     {
@@ -153,10 +160,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -1360,
-        120
+        820,
+        0
       ],
-      "id": "9e575005-8fa1-4f56-b1b4-07de8685793d",
+      "id": "233cc4ee-888e-4109-ac66-ad75c883b3c6",
       "name": "Sticky Note1"
     },
     {
@@ -166,10 +173,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -440,
-        220
+        1740,
+        100
       ],
-      "id": "a6b84849-dfc4-4f20-963a-2ecf2fe67224",
+      "id": "d83f0d54-5faa-41cc-9654-83ac85e7c93f",
       "name": "Header/Footer HTML4"
     },
     {
@@ -181,13 +188,13 @@
         "html": "={{ $json.htmlBlocks }}",
         "options": {}
       },
-      "id": "94dbe656-53c2-4083-acbe-bce2faaa3087",
+      "id": "8a4e4e9f-1c09-4f97-be11-a6d36036dc1e",
       "name": "이메일 발송",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2,
       "position": [
-        -260,
-        220
+        1900,
+        100
       ],
       "webhookId": "4dd3504c-cc2b-477e-83ae-e4ea472ab20e",
       "credentials": {
@@ -206,10 +213,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -620,
-        120
+        1560,
+        0
       ],
-      "id": "babc1282-7dfd-45ad-ae4b-ba993e6bf693",
+      "id": "0858723f-1548-4b56-8d3b-2f56f787ff06",
       "name": "Sticky Note2"
     },
     {
@@ -219,10 +226,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -600,
-        220
+        1580,
+        100
       ],
-      "id": "9fb6c27e-b8cc-4a52-90fe-be5078fe370a",
+      "id": "828c193a-8d23-4950-8c5b-fb9d1ed70c2f",
       "name": "News Block HTML"
     },
     {
@@ -234,10 +241,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -2180,
-        120
+        0,
+        0
       ],
-      "id": "15850422-81c3-4638-8c49-be9adc9af845",
+      "id": "e6a73b51-11e7-4649-9b72-350d64af5e38",
       "name": "Sticky Note3"
     },
     {
@@ -247,10 +254,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -900,
-        220
+        1280,
+        100
       ],
-      "id": "6c84257f-fbae-4255-9b9a-7e3f2a6c168c",
+      "id": "5abe1589-b230-4431-a325-8c0724895f59",
       "name": "랭킹 + 기존 데이터 통합"
     },
     {
@@ -260,10 +267,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1200,
-        220
+        980,
+        100
       ],
-      "id": "f320b476-7216-4f1d-b113-8b45fd3769a8",
+      "id": "4fddcbe6-aeff-4be1-bd6f-f8e1a4fad052",
       "name": "데이터 파싱"
     },
     {
@@ -273,10 +280,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1660,
-        220
+        520,
+        100
       ],
-      "id": "61c7e7b4-ecc1-4ff8-af38-65161501baba",
+      "id": "d6eddbec-f64e-4979-9784-daa8df0359fb",
       "name": "API 필요 데이터 전처리"
     },
     {
@@ -293,44 +300,17 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        -1500,
-        220
+        680,
+        100
       ],
-      "id": "0a76fcac-1543-435d-bec9-a30c21e3d806",
+      "id": "5f77a9c1-aa9e-4a27-92ac-afacb50477c7",
       "name": "모델 입력 처리용 Flatten"
     },
     {
       "parameters": {
-        "maxItems": 5
-      },
-      "type": "n8n-nodes-base.limit",
-      "typeVersion": 1,
-      "position": [
-        -760,
-        220
-      ],
-      "id": "41d56a2a-367c-406d-bcef-b234a7c12866",
-      "name": "Limit"
-    },
-    {
-      "parameters": {
-        "content": "## 정보 저장",
-        "height": 260
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        -120,
-        120
-      ],
-      "id": "202c32ab-a3ab-4eab-a0c0-ecb544253613",
-      "name": "Sticky Note4"
-    },
-    {
-      "parameters": {
         "httpMethod": "POST",
-        "path": "newsletter",
-        "responseMode": "responseNode",
+        "path": "newsletter-dev",
+        "responseMode": "lastNode",
         "options": {
           "responseHeaders": {
             "entries": [
@@ -350,38 +330,65 @@
           }
         }
       },
-      "id": "32e3a90f-2f44-4143-ab98-bfbb0f051348",
+      "id": "99cbabe4-f779-48c9-97a5-3efffbedf148",
       "name": "Webhook 트리거",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [
-        -2160,
-        220
+        40,
+        100
       ],
       "webhookId": "research-webhook"
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "f1b206c0-beaa-43ea-90ba-9ee83e542023",
-              "name": "response",
-              "value": true,
-              "type": "boolean"
-            }
-          ]
-        },
         "options": {}
       },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
-        -100,
-        220
+        1660,
+        620
       ],
-      "id": "edc4d3fd-8a6a-4910-b3b6-8416f5e1206e",
-      "name": "Edit Fields"
+      "id": "f42f706c-4ed9-46c8-a982-c8b446201188",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1420,
+        540
+      ],
+      "id": "14020cf6-7bdb-4fd9-a47d-38157d3c1c13",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        1920,
+        620
+      ],
+      "id": "b7eec2bb-4ebc-4db3-ac0c-ccbcc3605a06"
+    },
+    {
+      "parameters": {
+        "maxItems": 5
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        1420,
+        100
+      ],
+      "id": "9418f437-b494-4b06-be55-b860637609a4",
+      "name": "Limit"
     },
     {
       "parameters": {
@@ -403,9 +410,10 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "address": "={{ $json.address }}",
-            "keyword": "={{ $json.query }}",
-            "sorting": "={{ $json.sorting }}"
+            "address": "={{ $node[\"query\"].json.address }}",
+            "keyword": "={{ $node[\"query\"].json.query }}",
+            "sorting": "={{ $node[\"query\"].json.sorting }}",
+            "language": "={{ $node[\"query\"].json.language }}"
           },
           "matchingColumns": [
             "address"
@@ -446,8 +454,7 @@
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
+              "canBeUsedToMatch": true
             }
           ],
           "attemptToConvertTypes": false,
@@ -458,10 +465,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.6,
       "position": [
-        -1780,
-        420
+        2120,
+        100
       ],
-      "id": "d125790b-9205-4d48-94df-834d21170000",
+      "id": "15c26584-ef4b-4a46-85c8-068e453dd01a",
       "name": "Google Sheets",
       "alwaysOutputData": true,
       "credentials": {
@@ -473,20 +480,42 @@
     },
     {
       "parameters": {
-        "respondWith": "json",
-        "responseBody": "{\n  \"feedback\": \"true\"\n}",
-        "options": {}
+        "content": "## 정보 저장",
+        "height": 260
       },
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1.4,
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
       "position": [
-        -1640,
-        420
+        2060,
+        0
       ],
-      "id": "92f87599-f247-4eef-91a1-7615f8c35b7e",
-      "name": "Respond to Webhook"
+      "id": "0d8048b2-876f-4e93-b48e-f1600fb0f24e",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        120,
+        380
+      ],
+      "id": "b27d9ab8-aba5-473c-af78-3ccce810c94b",
+      "name": "When clicking ‘Execute workflow’"
     }
   ],
+  "pinData": {
+    "query": [
+      {
+        "json": {
+          "query": "인공지능",
+          "address": "kangmj0825@gmail.com",
+          "language": "ko",
+          "sorting": "신모델 개발"
+        }
+      }
+    ]
+  },
   "connections": {
     "네이버 뉴스 검색 (Naver API)": {
       "main": [
@@ -528,11 +557,6 @@
             "node": "네이버 뉴스 검색 (Naver API)",
             "type": "main",
             "index": 0
-          },
-          {
-            "node": "Google Sheets",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -542,17 +566,6 @@
         [
           {
             "node": "이메일 발송",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "이메일 발송": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields",
             "type": "main",
             "index": 0
           }
@@ -619,6 +632,17 @@
         ]
       ]
     },
+    "이메일 발송": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Limit": {
       "main": [
         [
@@ -640,22 +664,17 @@
           }
         ]
       ]
-    },
-    "Google Sheets": {
-      "main": [
-        [
-          {
-            "node": "Respond to Webhook",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
     }
   },
-  "pinData": {},
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "60bf43f1-9fae-4dd0-9995-492196bfc624",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "5b40a9494f24c8b44272b9f4d7c9963f14b3c071b2bdbe4d4eb707fe6a8210b2"
-  }
+  },
+  "id": "rOpayPtLknuqel1H",
+  "tags": []
 }

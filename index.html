@@ -86,7 +86,7 @@
                             placeholder="예: 인공지능, 스타트업, 클라우드, 블록체인"
                             required
                         >
-                        <span class="form-hint">관심 있는 키워드를 입력하세요 (여러 개 가능)</span>
+                        <span class="form-hint">관심 있는 키워드를 입력하세요</span>
                     </div>
 
                     <div class="form-group">
@@ -103,11 +103,16 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="language" class="form-label">언어 설정</label>
-                        <select id="language" name="language" class="form-select">
-                            <option value="ko">한국어</option>
-                            <option value="en">English</option>
-                        </select>
+                        <label for="sorting" class="form-label">정렬 기준 *</label>
+                        <input 
+                            type="text" 
+                            id="sorting" 
+                            name="sorting" 
+                            class="form-input" 
+                            placeholder="예: 신모델 개발, 투자 동향, 기술 동향, 시장 분석"
+                            required
+                        >
+                        <span class="form-hint">뉴스 정렬에 우선적으로 적용할 기준을 입력하세요</span>
                     </div>
 
                     <button type="submit" class="submit-button" id="submit-btn">
@@ -179,7 +184,7 @@
     </footer>
 
     <!-- JavaScript -->
-    <script src="config.js"></script>
+    <script src="config.js?v=2"></script>
     <script src="scripts/validation.js"></script>
     <script src="scripts/api.js"></script>
     <script src="scripts/main.js"></script>

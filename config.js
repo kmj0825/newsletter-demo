@@ -3,18 +3,18 @@
  * Update the webhook URL with your actual N8N instance
  */
 
-// Development configuration
+// Development configuration (Test URL)
 const DEV_CONFIG = {
-  N8N_WEBHOOK_URL: 'https://hcx-n8n.io.naver.com/webhook/research',  // Production URL for CORS support
+  N8N_WEBHOOK_URL: 'https://hcx-n8n.io.naver.com/webhook-test/newsletter',  // Test URL for development
   DEBUG: true,
-  TIMEOUT: 30000
+  TIMEOUT: 120000  // 2분 (120초)
 };
 
 // Production configuration
 const PROD_CONFIG = {
-  N8N_WEBHOOK_URL: 'https://hcx-n8n.io.naver.com/webhook/research',  // Production URL for CORS support
+  N8N_WEBHOOK_URL: 'https://hcx-n8n.io.naver.com/webhook/newsletter',  // Production URL for CORS support
   DEBUG: false,
-  TIMEOUT: 30000
+  TIMEOUT: 120000  // 2분 (120초) - LLM API 처리 시간 고려
 };
 
 // Auto-detect environment
@@ -22,8 +22,8 @@ const isLocalhost = window.location.hostname === 'localhost' ||
                    window.location.hostname === '127.0.0.1';
 const isGitHubPages = window.location.hostname.includes('github.io');
 
-// Use same config for both localhost and GitHub Pages for demo consistency
-const CONFIG = isLocalhost || isGitHubPages ? DEV_CONFIG : PROD_CONFIG;
+// Use Production URL for all environments to avoid CORS issues
+const CONFIG = PROD_CONFIG;
 
 // Update API configuration
 console.log('[Config] Environment detected:', window.location.hostname);

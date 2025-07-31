@@ -63,7 +63,7 @@ class NewsletterApp {
     this.fields = {
       keyword: this.form.querySelector('#keyword'),
       email: this.form.querySelector('#email'),
-      language: this.form.querySelector('#language')
+      sorting: this.form.querySelector('#sorting')
     };
     
     // Validate all fields exist
@@ -185,6 +185,7 @@ class NewsletterApp {
   enhancePlaceholders() {
     const examples = {
       keyword: ['HyperCLOVA-X, 네이버', '인공지능, 딥러닝', '스타트업, 투자', '클라우드, AWS', '블록체인, NFT'],
+      sorting: ['신모델 개발', '투자 동향', '기술 동향', '시장 분석', '업계 동향'],
       email: ['demo@example.com', 'test@company.com', 'user@domain.com']
     };
     
@@ -263,11 +264,10 @@ class NewsletterApp {
       const isConnected = await window.NewsletterAPI.testConnection();
       console.log(`[App] API connection test: ${isConnected ? 'SUCCESS' : 'FAILED'}`);
       
+      // Don't show warning message - just log the result
+      // Connection test might fail due to CORS but actual requests might work
       if (!isConnected) {
-        this.showStatus(
-          'API 연결 테스트에 실패했습니다. 일부 기능이 제한될 수 있습니다.',
-          'warning'
-        );
+        console.log('[App] Connection test failed, but this might not affect actual functionality');
       }
     } catch (error) {
       console.warn('[App] API connection test error:', error);
@@ -282,7 +282,8 @@ class NewsletterApp {
     return {
       keyword: this.fields.keyword.value.trim(),
       email: this.fields.email.value.trim(),
-      language: this.fields.language.value
+      sorting: this.fields.sorting.value.trim(),
+      language: 'ko' // 한국어 고정
     };
   }
 
@@ -390,7 +391,7 @@ class NewsletterApp {
     // Track success
     this.trackEvent('newsletter_subscribe_success', {
       keyword: this.getFormData().keyword,
-      language: this.getFormData().language
+      sorting: this.getFormData().sorting
     });
   }
 

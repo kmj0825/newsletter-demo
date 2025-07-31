@@ -7,7 +7,7 @@ class NewsletterAPI {
   constructor() {
     // Configuration based on N8N workflow analysis
     this.config = {
-      webhookUrl: 'https://hcx-n8n.io.naver.com/webhook/research', // Production URL for CORS support
+      webhookUrl: 'https://hcx-n8n.io.naver.com/webhook/newsletter', // Production URL for CORS support
       timeout: 30000, // 30 seconds timeout
       retryAttempts: 3,
       retryDelay: 1000 // 1 second
@@ -21,7 +21,7 @@ class NewsletterAPI {
    * @param {Object} data - Subscription data
    * @param {string} data.keyword - Search keyword
    * @param {string} data.email - User email
-   * @param {string} data.language - Language preference (ko/en)
+   * @param {string} data.sorting - Sorting criteria for news ranking
    * @returns {Promise<Object>} Response object
    */
   async subscribe(data) {
@@ -35,9 +35,12 @@ class NewsletterAPI {
         query: data.keyword.trim(),
         address: data.email.trim(),
         language: data.language || 'ko',
+        sorting: data.sorting ? data.sorting.trim() : '',
         timestamp: new Date().toISOString(),
         requestId: requestId
       };
+      
+      console.log('[API] Detailed payload being sent:', JSON.stringify(payload, null, 2));
 
       // Make request with retry logic
       const response = await this.makeRequestWithRetry(payload, requestId);
@@ -145,6 +148,19 @@ class NewsletterAPI {
       
       if (contentType && contentType.includes('application/json')) {
         responseData = await response.json();
+        
+        // Check for N8N workflow errors
+        if (responseData.code !== undefined && responseData.code !== 0) {
+          console.error('[API] N8N workflow error:', responseData);
+          throw new Error(`워크플로우 실행 중 오류 발생: ${responseData.message || 'Unknown workflow error'}`);
+        }
+        
+        // Check for empty results
+        if (responseData.message && responseData.message.includes('No item to return')) {
+          console.warn('[API] N8N workflow returned no results:', responseData);
+          throw new Error('뉴스를 찾을 수 없습니다. 다른 키워드로 시도해보세요.');
+        }
+        
       } else {
         // N8N might return plain text or HTML
         const textResponse = await response.text();
@@ -238,23 +254,33 @@ class NewsletterAPI {
   }
 
   /**
-   * Test webhook connectivity
+   * Test webhook connectivity with a simple HEAD request
    * @returns {Promise<boolean>} Connection status
    */
   async testConnection() {
     try {
-      const testPayload = {
-        query: 'test',
-        address: 'test@example.com',
-        language: 'ko',
-        test: true
-      };
+      console.log('[API] Testing connection to:', this.config.webhookUrl);
       
-      await this.makeHttpRequest(testPayload);
-      return true;
+      // Use a simple fetch with HEAD method to test connectivity without triggering workflow
+      const response = await fetch(this.config.webhookUrl, {
+        method: 'HEAD',
+        mode: 'cors'
+      });
+      
+      console.log('[API] Connection test response:', response.status);
+      
+      // Consider any response (even 405 Method Not Allowed) as successful connection
+      return response.status < 500;
       
     } catch (error) {
       console.warn('[API] Connection test failed:', error.message);
+      
+      // If CORS or network error, still consider it as potentially working
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        console.log('[API] Network error detected, but URL might still work for POST requests');
+        return true; // Assume it might work for actual requests
+      }
+      
       return false;
     }
   }
