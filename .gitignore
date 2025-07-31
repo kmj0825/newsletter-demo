@@ -57,3 +57,8 @@ serena/
 # Claude specific
 .claude/
 .claude.json
+
+# N8N workflow files (contains company credentials)
+newsletter_demo.json
+newsletter_demo_dev.json
+*_workflow.json
